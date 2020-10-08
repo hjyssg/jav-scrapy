@@ -15,7 +15,7 @@ const _ = require('lodash');
 // global var
 
 const VERSION = require('./package.json').version;
-const baseUrl = 'https://www.buscdn.life/';
+const baseUrl = 'https://www.seedmm.life/';
 const searchUrl = '/search';
 var pageIndex = 1;
 var currentPageHtml = null;
@@ -43,7 +43,7 @@ var proxy = process.env.http_proxy || program.proxy;
 request = request.defaults({
     timeout: timeout,
     headers: {
-        'Referer': 'http://www.javbus2.pw'
+        'Referer': 'https://www.seedmm.life/'
     }
 });
 if (proxy) {
