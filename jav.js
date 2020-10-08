@@ -68,8 +68,13 @@ console.log('代理服务器: '.green, (proxy ? proxy : '无').green.bold);
  ****************************
  ****************************/
 
+ function isEnd(){
+    return hasLimit && (count < 1);
+ }
+
 mkdirp.sync(output);
 
+//https://caolan.github.io/async/v2/during.js.html
 async.during(
     pageExist,
     // when page exist
@@ -88,7 +93,7 @@ async.during(
             console.log('抓取过程终止：%s', err.message);
             return process.exit(1);
         }
-        if (hasLimit && (count < 1)) {
+        if (isEnd()) {
             console.log('已尝试抓取%s部影片，本次抓取完毕'.green.bold, program.limit);
         } else {
             console.log('抓取完毕'.green.bold);
@@ -150,7 +155,7 @@ function getItems(links, next) {
 }
 
 function pageExist(callback) {
-    if (hasLimit && (count < 1) || targetFound) {
+    if (isEnd() || targetFound) {
         return callback();
     }
     var url = baseUrl + (pageIndex === 1 ? '' : ('/page/' + pageIndex));
@@ -195,7 +200,7 @@ function pageExist(callback) {
 }
 
 
-function parse(script) {
+function parseInfo(script) {
     let gid_r = /gid\s+=\s+(\d+)/g.exec(script);
     let gid = gid_r[1];
     let uc_r = /uc\s+=\s(\d+)/g.exec(script);
@@ -231,7 +236,7 @@ function getItemPage(link, index, callback) {
                 }
                 let $ = cheerio.load(body);
                 let script = $('script', 'body').eq(2).html();
-                let meta = parse(script);
+                let meta = parseInfo(script);
 
                 meta.category = [];
                 $('div.col-md-3 > p').each(function (i, e) {
